@@ -6,6 +6,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
+def plot(history):
+    fig, ax1 = plt.subplots(1, constrained_layout=True, figsize=(12,4))
+    ax1.plot(history)
+    plt.show()
+
 def pre_process(df):
     df = df.drop(columns=['customer name', 'customer e-mail', 'country'])
     x_train = df[['age','annual Salary', 'credit card debt', 'net worth']]
@@ -33,14 +38,8 @@ model.compile(
     optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
 )
 
-model.fit(
-    x_train, y_train, epochs = 100
-)
+history = model.fit(x_train, y_train, epochs = 100)
+plot(history.history['loss'])
 
-x_test = np.array([59,81565,9072,544291]).reshape(1,-1)
-x_test = norm_layer_x(x_test).numpy()
-y_pred = model.predict(x_test)
-denorm_layer_y = Normalization(axis=-1, mean = norm_layer_y.mean, variance = norm_layer_y.variance, invert=True)
-new_data = denorm_layer_y(y_pred)
-print(new_data)
+
 
